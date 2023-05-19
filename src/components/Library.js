@@ -1,8 +1,12 @@
-import { useState } from "react"
-import Shelf from "./Shelf"
+import { useState } from "react";
+import Shelf from "./Shelf";
+import NewShelfForm from "./NewShelfForm";
+import { Link, Route, Routes, BrowserRouter } from "react-router-dom";
+
+
 
 const Library = () => {
-    const [shelves, setShelves] = useState([
+  const [shelves, setShelves] = useState([
     {
       genre: 'Fiction',
       books: [
@@ -41,13 +45,40 @@ const Library = () => {
     },
   ])
 
-    return (
-        <section>
-            {
-              shelves.map((shelf, index) => <Shelf key={index} genre={shelf.genre} books={shelf.books} />)  
-            }
-        </section>
-    )
-}
+  const addShelf = (newShelf) => {
+    setShelves([...shelves, newShelf]);
+  };
+  const addBook = (book, shelfIndex) => {
+    setShelves(shelves.map((shelf, index) => {
+      if (index === shelfIndex) {
+        return { ...shelf, books: [...shelf.books, book] };
+      } else {
+        return shelf;
+      }
+    }));
+  };
+
+  return (
+    <BrowserRouter>
+      <section>
+        <NewShelfForm addShelf={addShelf} />
+        {shelves.map((shelf, index) => (
+          <div key={index}>
+            <Link to={`/shelf/${shelf.genre.toLowerCase()}`}>{shelf.genre}</Link>
+          </div>
+        ))}
+        <Routes>
+          {shelves.map((shelf, index) => (
+            <Route
+              key={index}
+              path={`/shelf/${shelf.genre.toLowerCase()}`}
+              element={<Shelf genre={shelf.genre} books={shelf.books} addBook={(book) => addBook(book, index)} />}
+            />
+          ))}
+        </Routes>
+      </section>
+    </BrowserRouter>
+  );
+};
 
 export default Library

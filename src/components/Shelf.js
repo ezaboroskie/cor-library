@@ -1,15 +1,12 @@
-import { useState } from "react"
 import Book from "./Book"
 import NewBookForm from "./NewBookForm"
 
-const Shelf = (props) => {
-    const [books, setBooks] = useState(props.books)
-
-    const addBook = book => setBooks([...books, book])
+const Shelf = ({ genre, books, addBook }) => {
+    
 
     return (
         <section>
-            <h1>{ props.genre }</h1>
+            <h1>{ genre }</h1>
             <NewBookForm addBook={addBook} />
             <section>
                 {
